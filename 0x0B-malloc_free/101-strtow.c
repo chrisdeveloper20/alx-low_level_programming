@@ -1,44 +1,102 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "main.h"
+#include <stdlib.h>
+
+int word_len(char *str);
+int count_words(char *str);
+char **strtow(char *str);
 
 /**
- * main - prints the minimum number of coins to
- * make change for an amount of money
- * @argc: number of arguments
- * @argv: array of arguments
+ * word_len - Locates the index marking the end of the
+ * first word contained within a string.
+ * @str: The string to be searched.
  *
- * Return: 0 (Success), 1 (Error)
+ * Return: The index marking the end of the initial word pointed to by str.
  */
-int main(int argc, char *argv[])
+int word_len(char *str)
 {
-	int num, j, result;
-	int coins[] = {25, 10, 5, 2, 1};
+	int index = 0, len = 0;
 
-	if (argc != 2)
+	while (*(str + index) && *(str + index) != ' ')
 	{
-		printf("Error\n");
-		return (1);
+		len++;
+		index++;
 	}
 
-	num = atoi(argv[1]);
-	result = 0;
+	return (len);
+}
 
-	if (num < 0)
-	{
-		printf("0\n");
-		return (0);
-	}
+/**
+ * count_words - Counts the number of words contained within a string.
+ * @str: The string to be searched.
+ *
+ * Return: The number of words contained within str.
+ */
+int count_words(char *str)
+{
+	int index = 0, words = 0, len = 0;
 
-	for (j = 0; j < 5 && num >= 0; j++)
+	for (index = 0; *(str + index); index++)
+		len++;
+
+	for (index = 0; index < len; index++)
 	{
-		while (num >= coins[j])
+		if (*(str + index) != ' ')
 		{
-			result++;
-			num -= coins[j];
+			words++;
+			index += word_len(str + index);
 		}
 	}
 
-	printf("%d\n", result);
-	return (0);
+	return (words);
+}
+
+/**
+ * strtow - Splits a string into words.
+ * @str: The string to be split.
+ *
+ * Return: If str = NULL, str = "", or the function fails - NULL.
+ * Otherwise - a pointer to an array of strings (words).
+ */
+char **strtow(char *str)
+{
+	char **strings;
+	int index = 0, words, w, letters, l;
+
+	if (str == NULL || str[0] == '\0')
+		return (NULL);
+
+	words = count_words(str);
+	if (words == 0)
+		return (NULL);
+
+	strings = malloc(sizeof(char *) * (words + 1));
+	if (strings == NULL)
+		return (NULL);
+
+	for (w = 0; w < words; w++)
+	{
+		while (str[index] == ' ')
+			index++;
+
+		letters = word_len(str + index);
+
+		strings[w] = malloc(sizeof(char) * (letters + 1));
+
+		if (strings[w] == NULL)
+		{
+			for (; w >= 0; w--)
+				free(strings[w]);
+
+			free(strings);
+			return (NULL);
+		}
+
+		for (l = 0; l < letters; l++)
+			strings[w][l] = str[index++];
+
+		strings[w][l] = '\0';
+	}
+	strings[w] = NULL;
+
+	return (strings);
 }
