@@ -1,13 +1,14 @@
 #include <stdio.h>
-	#include <stdlib.h>
-	#include "dog.h"
+#include <stdlib.h>
+#include "dog.h"
 
-
-	/**
-	 * print_dog - prints a dog data.
-	 * @d:  the dog structure.
-	 */
-	void print_dog(struct dog *d)
+/**
+ * print_dog - Prints all the data of a dog
+ * @d: A dog structure
+ *
+ * Return: Nothing
+ */
+void print_dog(struct dog *d)
 {
 	if (d != NULL)
 	{
